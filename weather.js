@@ -18,6 +18,22 @@ const saveToken = async (token) => {
 	}
 };
 
+const getForecast = async () => {
+	try {
+		const weather = await getWeather(process.env.CITY);
+		console.log(weather);
+	} catch (err) {
+		if (err?.response?.status === 404) {
+			printError('City not found');
+		} else if (err?.response?.status === 401) {
+			printError('Invalid API token');
+		} else {
+			// Not an axios error
+			printError(err.message);
+		}
+	}
+};
+
 const initCLI = () => {
 	const args = getArgs(process.argv);
 
@@ -33,7 +49,7 @@ const initCLI = () => {
 		saveToken(args.t);
 	}
 
-	// Fetch and display weather
+	getForecast();
 };
 
 initCLI();
